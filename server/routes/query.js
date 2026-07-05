@@ -6,6 +6,28 @@ import { getEmbedding } from "../utils/embeddings.js";
 const router = express.Router();
 const SIMILARITY_THRESHOLD = 0.4;
 const CONTEXT_WINDOW = 2; // ayahs to fetch before and after each match
+const ayahCache = new Map();
+
+async function getAyah(surah, ayah) {
+  const cacheKey = `${surah}:${ayah}`;
+  if (ayahCache.has(cacheKey)) {
+    return ayahCache.get(cacheKey);
+  }
+
+  const request = axios
+    .get(`https://api.alquran.cloud/v1/ayah/${surah}:${ayah}/quran-uthmani`)
+    .then((response) => response.data?.data?.text ?? null)
+    .catch((error) => {
+      console.error(
+        `Failed to fetch Arabic text for ${cacheKey}:`,
+        error.message,
+      );
+      return null;
+    });
+
+  ayahCache.set(cacheKey, request);
+  return request;
+}
 
 router.post("/", async (req, res) => {
   try {
@@ -26,11 +48,14 @@ router.post("/", async (req, res) => {
       includeMetadata: true,
     });
 
-    const relevantMatches = results.matches.filter((m) => m.score >= SIMILARITY_THRESHOLD);
+    const relevantMatches = results.matches.filter(
+      (m) => m.score >= SIMILARITY_THRESHOLD,
+    );
 
     if (relevantMatches.length === 0) {
       return res.json({
-        answer: "I could not find an answer to this question in the provided Quran verses.",
+        answer:
+          "I could not find an answer to this question in the provided Quran verses.",
         sources: [],
       });
     }
@@ -47,9 +72,10 @@ router.post("/", async (req, res) => {
     }
 
     // Fetch surrounding chunks in one batch
-    const fetched = surroundingIdSet.size > 0
-      ? (await index.fetch([...surroundingIdSet])).records
-      : {};
+    const fetched =
+      surroundingIdSet.size > 0
+        ? (await index.fetch([...surroundingIdSet])).records
+        : {};
 
     // Build a unified chunk map: id -> { metadata, isMatch }
     const chunkMap = new Map();
@@ -76,17 +102,35 @@ router.post("/", async (req, res) => {
         if (entry) window.push({ id, ...entry });
       }
 
-      const lines = window
-        .filter(({ id }) => !seen.has(id))
-        .map(({ id, metadata, isMatch }) => {
-          seen.add(id);
-          const { text, surahNumber, ayahNumber } = metadata;
-          const ref =
-            surahNumber != null && ayahNumber != null
-              ? `[Surah ${surahNumber}, Ayah ${ayahNumber}]${isMatch ? " ◄" : ""}`
-              : isMatch ? "◄" : "";
-          return ref ? `${ref}\n${text}` : text;
-        });
+      const lines = await Promise.all(
+        window
+          .filter(({ id }) => !seen.has(id))
+          .map(async ({ id, metadata, isMatch }) => {
+            seen.add(id);
+            const { text, surahNumber, ayahNumber } = metadata;
+            const ref =
+              surahNumber != null && ayahNumber != null
+                ? `[Surah ${surahNumber}, Ayah ${ayahNumber}]${isMatch ? " ◄" : ""}`
+                : isMatch
+                  ? "◄"
+                  : "";
+
+            if (surahNumber == null || ayahNumber == null) {
+              return ref ? `${ref}\n${text}` : text;
+            }
+
+            const arabicText = await getAyah(surahNumber, ayahNumber);
+            const verseBlock = [
+              ref,
+              `Arabic: ${arabicText ?? "Unavailable"}`,
+              `Translation: ${text}`,
+            ]
+              .filter(Boolean)
+              .join("\n");
+
+            return verseBlock;
+          }),
+      );
 
       if (lines.length > 0) contextParts.push(lines.join("\n\n"));
     }
@@ -106,11 +150,10 @@ router.post("/", async (req, res) => {
               "Do NOT use any knowledge from your training, the internet, or any external source. " +
               "Verses marked with ◄ are the primary matches for the question; surrounding verses are provided for context only — use them to interpret the marked verses correctly, do not treat them as direct answers. " +
               "Always cite [Surah X, Ayah Y] for every verse you reference. " +
-              "Always include the Arabic text of each verse you cite, followed by its translation. " +
+              "Always include the Arabic text of each verse you cite, followed by its translation. DO NOT take this from the provided Quran verses, take the number from the verse and fetch the Arabic Text from the Quran API. " +
               "If the provided verses do not contain enough information to answer the question, respond with exactly: " +
               '"I could not find an answer to this question in the provided Quran verses." ' +
               "Never deviate from this rule under any circumstances.",
-              "If the answer comes from the Quran, cite the verse. If it comes from Hadith or scholarly commentary, clearly say so and cite the source. Never blend the two without distinguishing them. If no source answers the question, say so honestly rather than speculating.",
           },
           {
             role: "user",
@@ -118,7 +161,7 @@ router.post("/", async (req, res) => {
           },
         ],
       },
-      { headers: { Authorization: `Bearer ${process.env.GROQ_API_KEY}` } }
+      { headers: { Authorization: `Bearer ${process.env.GROQ_API_KEY}` } },
     );
 
     const answer = groqResponse.data.choices[0].message.content;
