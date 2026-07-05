@@ -40,6 +40,9 @@
               <path d="m9 18 6-6-6-6" />
             </svg>
           </button>
+          <button class="text-button roadmap-button" data-open-roadmap>
+            What&apos;s next
+          </button>
         </div>
 
         <div class="hero-art" aria-hidden="true">
@@ -180,6 +183,25 @@
           Save preferences
         </button>
       </form>
+    </dialog>
+
+    <dialog id="roadmapDialog" class="modal roadmap-modal">
+      <button class="modal-close" data-close-modal aria-label="Close">×</button>
+      <p class="eyebrow">Upcoming features</p>
+      <h2>What Safeeyah is planning next.</h2>
+      <p class="modal-intro">
+        The next version of the app is aimed at widening the experience while
+        keeping the same calm and thoughtful style.
+      </p>
+      <ul class="roadmap-list">
+        <li>Voice assistance for hands-free questions and replies</li>
+        <li>More information beyond the first 14 surahs</li>
+        <li>Hadith support alongside Quran answers</li>
+        <li>Broader guidance tools for deeper study</li>
+      </ul>
+      <button class="primary-button full-button" type="button" data-close-modal>
+        Close
+      </button>
     </dialog>
 
     <script src="/app.js"></script>

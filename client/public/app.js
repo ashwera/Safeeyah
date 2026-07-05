@@ -8,6 +8,7 @@ const sendButton = document.querySelector("#sendButton");
 const conversation = document.querySelector("#conversation");
 const themeToggle = document.querySelector("#themeToggle");
 const journeyButton = document.querySelector("[data-start-journey]");
+const roadmapDialog = document.querySelector("#roadmapDialog");
 
 const preferences = {
   responseStyle: "balanced",
@@ -22,6 +23,10 @@ journeyButton.addEventListener("click", () => {
   landing.classList.add("is-hidden");
   chatApp.classList.remove("is-hidden");
   questionInput.focus();
+});
+
+document.querySelector("[data-open-roadmap]").addEventListener("click", () => {
+  roadmapDialog.showModal();
 });
 
 document.querySelectorAll("[data-close-modal]").forEach((button) => {
@@ -170,6 +175,12 @@ questionInput.addEventListener("keydown", (event) => {
 });
 
 [settingsDialog].forEach((dialog) => {
+  dialog.addEventListener("click", (event) => {
+    if (event.target === dialog) dialog.close();
+  });
+});
+
+[roadmapDialog].forEach((dialog) => {
   dialog.addEventListener("click", (event) => {
     if (event.target === dialog) dialog.close();
   });

@@ -259,6 +259,16 @@ h1 em {
   stroke-width: 1.5;
 }
 
+.hero-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.roadmap-button {
+  margin-top: 18px;
+}
+
 .hero-art {
   position: relative;
   height: min(68vh, 680px);
@@ -416,6 +426,62 @@ h1 em {
 
 .is-hidden {
   display: none !important;
+}
+
+.modal {
+  width: min(560px, calc(100vw - 32px));
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  padding: 30px 28px 26px;
+  color: var(--ink);
+  background: linear-gradient(
+    180deg,
+    var(--surface-translucent),
+    var(--input-bg)
+  );
+  box-shadow: var(--shadow);
+}
+
+.modal::backdrop {
+  background: rgba(16, 24, 28, 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.modal-close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--ink);
+  background: var(--white);
+  cursor: pointer;
+  font-size: 1.2rem;
+  line-height: 1;
+}
+
+.modal-intro {
+  margin: 18px 0 20px;
+  color: var(--ink-soft);
+  font-family: Georgia, "Times New Roman", serif;
+  line-height: 1.7;
+}
+
+.roadmap-list {
+  margin: 0 0 22px;
+  padding-left: 22px;
+  color: var(--ink);
+  line-height: 1.8;
+}
+
+.roadmap-list li + li {
+  margin-top: 8px;
+}
+
+.full-button {
+  width: 100%;
 }
 
 .chat-app {
