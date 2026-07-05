@@ -38,14 +38,6 @@ document.querySelector("#settingsButton").addEventListener("click", () => {
   settingsDialog.showModal();
 });
 
-document.querySelector("#logoutButton").addEventListener("click", () => {
-  chatApp.classList.add("is-hidden");
-  landing.classList.remove("is-hidden");
-  conversation.innerHTML = initialWelcomeMarkup();
-  bindSuggestionButtons();
-  window.scrollTo({ top: 0, behavior: "smooth" });
-});
-
 settingsForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const data = new FormData(settingsForm);

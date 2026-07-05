@@ -20,23 +20,23 @@
 
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --ink: #e8eeee;
-  --ink-soft: #aababc;
-  --blue: #7898a5;
-  --blue-deep: #9ab8c2;
-  --blue-pale: #263e46;
-  --cream: #152429;
-  --white: #1d3036;
-  --sand: #c0a17e;
-  --brown: #d0b18d;
-  --line: rgba(173, 201, 208, 0.2);
-  --shadow: 0 24px 70px rgba(0, 0, 0, 0.34);
-  --body-glow: rgba(83, 123, 137, 0.25);
-  --chat-overlay-start: rgba(21, 36, 41, 0.9);
-  --chat-overlay-end: rgba(21, 36, 41, 0.95);
-  --header-bg: rgba(29, 48, 54, 0.82);
-  --surface-translucent: rgba(29, 48, 54, 0.78);
-  --input-bg: rgba(29, 48, 54, 0.96);
+  --ink: #f2f7f6;
+  --ink-soft: #bfd0cd;
+  --blue: #89aeb7;
+  --blue-deep: #6f97a4;
+  --blue-pale: #253941;
+  --cream: #0f181b;
+  --white: #172428;
+  --sand: #d3b08c;
+  --brown: #e0bf97;
+  --line: rgba(167, 194, 197, 0.16);
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.46);
+  --body-glow: rgba(92, 132, 141, 0.16);
+  --chat-overlay-start: rgba(15, 24, 27, 0.92);
+  --chat-overlay-end: rgba(15, 24, 27, 0.98);
+  --header-bg: rgba(20, 31, 35, 0.82);
+  --surface-translucent: rgba(20, 31, 35, 0.8);
+  --input-bg: rgba(20, 31, 35, 0.96);
 }
 
 * {
@@ -148,8 +148,7 @@ button {
   transform: rotate(-4deg) scale(1.03);
 }
 
-.text-button,
-.logout-button {
+.text-button {
   border: 0;
   border-bottom: 1px solid currentColor;
   padding: 6px 1px;
@@ -163,8 +162,7 @@ button {
     transform 180ms ease;
 }
 
-.text-button:hover,
-.logout-button:hover {
+.text-button:hover {
   opacity: 0.72;
   transform: translateY(-1px);
 }
@@ -245,7 +243,7 @@ h1 em {
   color: var(--blue-deep);
   background: transparent;
   transform: translateY(-1px);
-  box-shadow: 0 14px 32px rgba(73, 107, 120, 0.08);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.18);
 }
 
 .primary-button:active {
@@ -283,7 +281,7 @@ h1 em {
   width: 145px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: rgba(199, 173, 141, 0.46);
+  background: rgba(211, 176, 140, 0.34);
   filter: blur(0.2px);
   animation: float 10s ease-in-out infinite;
 }
@@ -310,8 +308,8 @@ h1 em {
   background:
     linear-gradient(
       180deg,
-      rgba(226, 238, 241, 0.35),
-      rgba(129, 161, 174, 0.72)
+      rgba(168, 198, 204, 0.18),
+      rgba(111, 151, 164, 0.58)
     ),
     var(--blue);
   box-shadow: var(--shadow);
@@ -326,14 +324,14 @@ h1 em {
   left: -30%;
   bottom: -18%;
   border-radius: 50%;
-  background: #bca184;
+  background: #9f8568;
   transform: rotate(-5deg);
 }
 
 .arch-pattern {
   position: absolute;
   inset: 0;
-  opacity: 0.2;
+  opacity: 0.14;
   background-image:
     linear-gradient(
       30deg,
@@ -359,8 +357,8 @@ h1 em {
   width: 118px;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: var(--cream);
-  box-shadow: 20px 7px 0 2px rgba(101, 135, 149, 0.75);
+  background: #e8ece9;
+  box-shadow: 20px 7px 0 2px rgba(89, 126, 138, 0.62);
   transform: translateX(-58%);
 }
 
@@ -491,7 +489,7 @@ h1 em {
     repeating-linear-gradient(
       45deg,
       transparent 0 34px,
-      rgba(112, 151, 165, 0.1) 35px 36px
+      rgba(137, 174, 183, 0.08) 35px 36px
     );
   animation: page-enter 360ms ease-out both;
 }
@@ -595,8 +593,8 @@ h1 em {
 
 .suggestions button:hover {
   transform: translateY(-2px);
-  border-color: rgba(73, 107, 120, 0.28);
-  box-shadow: 0 10px 22px rgba(73, 107, 120, 0.07);
+  border-color: rgba(137, 174, 183, 0.3);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
 }
 
 .message {
@@ -635,7 +633,7 @@ h1 em {
 }
 
 .message-error {
-  color: #8e514c;
+  color: #d48f88;
 }
 
 .typing span {
@@ -672,7 +670,7 @@ h1 em {
   padding: 20px 22px;
   color: var(--ink);
   background: var(--input-bg);
-  box-shadow: 0 12px 38px rgba(73, 107, 120, 0.08);
+  box-shadow: 0 12px 38px rgba(0, 0, 0, 0.18);
   transition:
     border-color 180ms ease,
     box-shadow 180ms ease,
@@ -682,7 +680,7 @@ h1 em {
 .composer textarea:focus {
   border-color: var(--blue);
   transform: translateY(-1px);
-  box-shadow: 0 16px 42px rgba(73, 107, 120, 0.12);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.24);
 }
 
 .composer > button {
@@ -700,7 +698,7 @@ h1 em {
 
 .composer > button:hover:not(:disabled) {
   transform: translateY(-1px);
-  box-shadow: 0 14px 28px rgba(73, 107, 120, 0.14);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.2);
 }
 
 .composer > button:active:not(:disabled) {
@@ -722,14 +720,14 @@ h1 em {
 .composer > p {
   grid-column: 1 / -1;
   margin: 0;
-  color: #879398;
+  color: #95a6a4;
   text-align: center;
   font-size: 0.64rem;
 }
 
 .modal {
   width: min(470px, calc(100% - 30px));
-  border: 1px solid rgba(73, 107, 120, 0.25);
+  border: 1px solid var(--line);
   padding: 50px;
   color: var(--ink);
   background: var(--white);
@@ -738,7 +736,7 @@ h1 em {
 }
 
 .modal::backdrop {
-  background: rgba(38, 58, 66, 0.42);
+  background: rgba(4, 8, 10, 0.56);
   backdrop-filter: blur(6px);
 }
 
