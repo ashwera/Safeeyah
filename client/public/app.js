@@ -69,7 +69,7 @@ function initialWelcomeMarkup() {
       <div class="suggestions">
         <button>How can I build consistency in prayer?</button>
         <button>What does tawakkul mean in daily life?</button>
-        <button>Share a reflection on gratitude</button>
+        <button>What sources do you have information from?</button>
       </div>
     </div>`;
 }
