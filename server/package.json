@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@google/genai": "^2.10.0",
     "@pinecone-database/pinecone": "^3.x.x",
     "axios": "^1.x.x",
     "buffer": "^6.0.3",
