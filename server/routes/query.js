@@ -29,6 +29,17 @@ async function getAyah(surah, ayah) {
   return request;
 }
 
+function stripMarkdownFormatting(text) {
+  return text
+    .replace(/\*\*\*(.*?)\*\*\*/g, "$1")
+    .replace(/\*\*(.*?)\*\*/g, "$1")
+    .replace(/\*(.*?)\*/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/^[-*+]\s+/gm, "")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 router.post("/", async (req, res) => {
   try {
     const { question } = req.body;
@@ -151,6 +162,7 @@ router.post("/", async (req, res) => {
               "Verses marked with ◄ are the primary matches for the question; surrounding verses are provided for context only — use them to interpret the marked verses correctly, do not treat them as direct answers. " +
               "Always cite [Surah X, Ayah Y] for every verse you reference. " +
               "Always include the Arabic text of each verse you cite, followed by its translation. DO NOT take this from the provided Quran verses, take the number from the verse and fetch the Arabic Text from the Quran API. " +
+              "Write in plain text only. Do not use markdown formatting, bold, italics, bullets, or asterisks. " +
               "If the provided verses do not contain enough information to answer the question, respond with exactly: " +
               '"I could not find an answer to this question in the provided Quran verses." ' +
               "Never deviate from this rule under any circumstances.",
@@ -164,7 +176,9 @@ router.post("/", async (req, res) => {
       { headers: { Authorization: `Bearer ${process.env.GROQ_API_KEY}` } },
     );
 
-    const answer = groqResponse.data.choices[0].message.content;
+    const answer = stripMarkdownFormatting(
+      groqResponse.data.choices[0].message.content,
+    );
 
     res.json({
       answer,
