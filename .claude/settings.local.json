@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(claude-api)",
+      "Skill(claude-api:*)",
+      "Bash(node scripts/populate.js)",
+      "Bash(node -e \"const {createRequire}=require\\('module'\\);const r=createRequire\\('file:///C:/Users/syeda/OneDrive/Desktop/LLM/server/index.js'\\);const m=r\\('pdf-parse'\\);console.log\\(typeof m, Object.keys\\(m\\).slice\\(0,10\\)\\)\")",
+      "Bash(node -e \"const {createRequire}=require\\('module'\\);const r=createRequire\\('file:///C:/Users/syeda/OneDrive/Desktop/LLM/server/index.js'\\);const {PDFParse}=r\\('pdf-parse'\\);const p=new PDFParse\\(\\);console.log\\(typeof p.pdf, Object.getOwnPropertyNames\\(Object.getPrototypeOf\\(p\\)\\)\\)\")",
+      "Bash(node -e \"const {createRequire}=require\\('module'\\);const r=createRequire\\('file:///C:/Users/syeda/OneDrive/Desktop/LLM/server/index.js'\\);const {PDFParse}=r\\('pdf-parse'\\);const p=new PDFParse\\(\\);console.log\\(Object.getOwnPropertyNames\\(Object.getPrototypeOf\\(p\\)\\)\\)\")",
+      "Bash(node --input-type=module)",
+      "Bash(node -e \"const { createRequire } = await import\\('module'\\); const req = createRequire\\(import.meta.url\\); const p = req\\('pdf-parse'\\); console.log\\(typeof p\\); console.log\\(Object.keys\\(p\\)\\);\" --input-type=module)",
+      "Bash(node --experimental-vm-modules -e \"import\\('pdf-parse'\\).then\\(m => console.log\\(typeof m, Object.keys\\(m\\)\\)\\).catch\\(e => console.log\\(e.message\\)\\)\")"
+    ]
+  }
+}

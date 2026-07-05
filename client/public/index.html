@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Safeeyah, a calm space for thoughtful Islamic questions."
+    />
+    <title>Safeeyah</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div class="page-noise" aria-hidden="true"></div>
+
+    <main id="landing" class="landing">
+      <nav class="landing-nav">
+        <a class="brand" href="#" aria-label="Safeeyah home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 48 48">
+              <path d="M24 4 31 17l13 7-13 7-7 13-7-13-13-7 13-7Z" />
+              <circle cx="24" cy="24" r="5" />
+            </svg>
+          </span>
+          <span>Safeeyah</span>
+        </a>
+      </nav>
+
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Knowledge with tranquility</p>
+          <h1>Ask with curiosity.<br /><em>Learn with peace.</em></h1>
+          <p class="hero-intro">
+            A thoughtful companion for your questions about faith, practice, and
+            everyday life.
+          </p>
+          <button class="primary-button" data-start-journey>
+            Begin your journey
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="sun"></div>
+          <div class="arch arch-back"></div>
+          <div class="arch arch-front">
+            <div class="arch-pattern"></div>
+            <div class="moon"></div>
+            <div class="star star-one">✦</div>
+            <div class="star star-two">·</div>
+          </div>
+          <div class="art-caption">
+            <span>01</span>
+            <span class="caption-line"></span>
+            <span>A quiet place to seek</span>
+          </div>
+        </div>
+      </section>
+
+      <footer class="landing-footer">
+        <span>بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم</span>
+        <span>In the name of Allah, the Most Gracious, the Most Merciful</span>
+      </footer>
+    </main>
+
+    <section id="chatApp" class="chat-app is-hidden" aria-label="Safeeyah chat">
+      <header class="app-header">
+        <a class="brand" href="#" aria-label="Safeeyah">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 48 48">
+              <path d="M24 4 31 17l13 7-13 7-7 13-7-13-13-7 13-7Z" />
+              <circle cx="24" cy="24" r="5" />
+            </svg>
+          </span>
+          <span>Safeeyah</span>
+        </a>
+        <div class="header-actions">
+          <button
+            id="settingsButton"
+            class="icon-button"
+            aria-label="Open settings"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="3" />
+              <path
+                d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.8 2.8-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.2h-4V21a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1L4.2 17l.1-.1a1.7 1.7 0 0 0 .3-1.9A1.7 1.7 0 0 0 3 14H2.8v-4H3a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9L4.2 7 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6a1.7 1.7 0 0 0 1-1.6v-.2h4V3a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1L19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.2v4H21a1.7 1.7 0 0 0-1.6 1Z"
+              />
+            </svg>
+          </button>
+          <button id="logoutButton" class="logout-button">Log out</button>
+        </div>
+      </header>
+
+      <div class="chat-shell">
+        <div id="conversation" class="conversation" aria-live="polite">
+          <div class="welcome-message">
+            <div class="welcome-ornament">✦</div>
+            <p class="eyebrow">Assalamu alaikum</p>
+            <h2>What would you like<br />to understand today?</h2>
+            <p>Ask a question, and we’ll explore it together with care.</p>
+            <div class="suggestions">
+              <button>How can I build consistency in prayer?</button>
+              <button>What does tawakkul mean in daily life?</button>
+              <button>Share a reflection on gratitude</button>
+            </div>
+          </div>
+        </div>
+
+        <form id="questionForm" class="composer">
+          <label class="sr-only" for="questionInput">Ask a question</label>
+          <textarea
+            id="questionInput"
+            rows="1"
+            placeholder="Ask anything about faith and practice..."
+            required
+          ></textarea>
+          <button id="sendButton" type="submit" aria-label="Send question">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="m5 12 14-7-4 14-3-6-7-1Z" />
+              <path d="m12 13 7-8" />
+            </svg>
+          </button>
+          <p>
+            Safeeyah may make mistakes. Verify important guidance with a trusted
+            scholar.
+          </p>
+        </form>
+      </div>
+    </section>
+
+    <dialog id="settingsDialog" class="modal settings-modal">
+      <button class="modal-close" data-close-modal aria-label="Close">×</button>
+      <p class="eyebrow">Preferences</p>
+      <h2>Make the space yours.</h2>
+      <form id="settingsForm">
+        <label>
+          Response style
+          <select name="responseStyle">
+            <option value="balanced">Balanced</option>
+            <option value="concise">Concise</option>
+            <option value="detailed">Detailed</option>
+          </select>
+        </label>
+        <label>
+          Preferred language
+          <select name="language">
+            <option value="English">English</option>
+            <option value="Arabic">Arabic</option>
+            <option value="Urdu">Urdu</option>
+          </select>
+        </label>
+        <label class="toggle-row">
+          <span>
+            Include Arabic terms
+            <small>Show key Islamic terms in Arabic</small>
+          </span>
+          <input type="checkbox" name="arabicTerms" checked />
+        </label>
+        <label class="toggle-row theme-toggle-row">
+          <span>
+            Dark mode
+            <small>Use a darker, low-light color palette</small>
+          </span>
+          <span class="theme-switch">
+            <input
+              id="themeToggle"
+              type="checkbox"
+              name="darkMode"
+              role="switch"
+              aria-label="Use dark mode"
+            />
+            <span class="theme-switch-track" aria-hidden="true">
+              <span class="theme-switch-thumb"></span>
+            </span>
+          </span>
+        </label>
+        <button class="primary-button full-button" type="submit">
+          Save preferences
+        </button>
+      </form>
+    </dialog>
+
+    <script src="/app.js"></script>
+  </body>
+</html>
