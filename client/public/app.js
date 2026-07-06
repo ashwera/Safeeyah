@@ -9,6 +9,39 @@ const conversation = document.querySelector("#conversation");
 const themeToggle = document.querySelector("#themeToggle");
 const journeyButton = document.querySelector("[data-start-journey]");
 const roadmapDialog = document.querySelector("#roadmapDialog");
+const reducedMotionQuery = window.matchMedia(
+  "(prefers-reduced-motion: reduce)",
+);
+const conversationStateKey = "safeeyah-conversation-state";
+const conversationSessionKey = "safeeyah-conversation-session";
+
+function getConversationSessionId() {
+  const existingSessionId = sessionStorage.getItem(conversationSessionKey);
+  if (existingSessionId) return existingSessionId;
+
+  const newSessionId =
+    window.crypto?.randomUUID?.() ??
+    `session-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  sessionStorage.setItem(conversationSessionKey, newSessionId);
+  return newSessionId;
+}
+
+function loadConversationState() {
+  try {
+    return JSON.parse(localStorage.getItem(conversationStateKey)) ?? {};
+  } catch {
+    return {};
+  }
+}
+
+function saveConversationState(state) {
+  localStorage.setItem(conversationStateKey, JSON.stringify(state));
+}
+
+const conversationState = {
+  sessionId: getConversationSessionId(),
+  ...loadConversationState(),
+};
 
 const preferences = {
   responseStyle: "balanced",
@@ -22,7 +55,9 @@ applyTheme(preferences.darkMode);
 journeyButton.addEventListener("click", () => {
   landing.classList.add("is-hidden");
   chatApp.classList.remove("is-hidden");
-  questionInput.focus();
+  requestAnimationFrame(() => {
+    questionInput.focus();
+  });
 });
 
 document.querySelector("[data-open-roadmap]").addEventListener("click", () => {
@@ -90,7 +125,13 @@ function addMessage(text, role, extraClass = "") {
   paragraph.textContent = text;
   message.appendChild(paragraph);
   conversation.appendChild(message);
-  message.scrollIntoView({ behavior: "smooth", block: "end" });
+  scrollConversationToBottom();
+
+  if (role === "assistant" && !extraClass.includes("message-error")) {
+    conversationState.lastAssistantMessage = text;
+    saveConversationState(conversationState);
+  }
+
   return message;
 }
 
@@ -100,8 +141,16 @@ function addTypingIndicator() {
   message.setAttribute("aria-label", "Safeeyah is thinking");
   message.innerHTML = "<span>•</span><span>•</span><span>•</span>";
   conversation.appendChild(message);
-  message.scrollIntoView({ behavior: "smooth", block: "end" });
+  scrollConversationToBottom();
   return message;
+}
+
+function scrollConversationToBottom() {
+  const behavior = reducedMotionQuery.matches ? "auto" : "smooth";
+  conversation.scrollTo({
+    top: conversation.scrollHeight,
+    behavior,
+  });
 }
 
 questionForm.addEventListener("submit", async (event) => {
@@ -129,7 +178,13 @@ questionForm.addEventListener("submit", async (event) => {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        question: `${question}\n\nResponse preferences: ${preferenceContext}`,
+        question,
+        responsePreferences: preferenceContext,
+        conversationContext: {
+          sessionId: conversationState.sessionId,
+          lastUserQuestion: conversationState.lastUserQuestion,
+          lastAssistantMessage: conversationState.lastAssistantMessage,
+        },
       }),
     });
     const data = await response.json();
@@ -140,6 +195,8 @@ questionForm.addEventListener("submit", async (event) => {
 
     typing.remove();
     addMessage(data.answer, "assistant");
+    conversationState.lastUserQuestion = question;
+    saveConversationState(conversationState);
   } catch (error) {
     typing.remove();
     addMessage(

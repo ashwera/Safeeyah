@@ -7,6 +7,56 @@ const router = express.Router();
 const SIMILARITY_THRESHOLD = 0.4;
 const CONTEXT_WINDOW = 2; // ayahs to fetch before and after each match
 const ayahCache = new Map();
+const conversationMemory = new Map();
+
+function normalizeText(text) {
+  return String(text ?? "").trim();
+}
+
+function isYesNoReply(text) {
+  return /^(y|yes|yeah|yep|sure|ok|okay|correct|right|no|nope|nah|not really)$/i.test(
+    normalizeText(text),
+  );
+}
+
+function buildConversationContext(question, conversationContext = {}) {
+  const sessionId = normalizeText(conversationContext.sessionId);
+  const memory = sessionId ? (conversationMemory.get(sessionId) ?? {}) : {};
+  const remembered = {
+    lastUserQuestion:
+      normalizeText(conversationContext.lastUserQuestion) ||
+      normalizeText(memory.lastUserQuestion),
+    lastAssistantMessage:
+      normalizeText(conversationContext.lastAssistantMessage) ||
+      normalizeText(memory.lastAssistantMessage),
+  };
+  const reply = normalizeText(question);
+  const followUpReply = isYesNoReply(reply) && remembered.lastAssistantMessage;
+
+  const contextLines = [];
+  if (remembered.lastUserQuestion) {
+    contextLines.push(`Earlier user question: ${remembered.lastUserQuestion}`);
+  }
+  if (remembered.lastAssistantMessage) {
+    contextLines.push(
+      `Last assistant follow-up: ${remembered.lastAssistantMessage}`,
+    );
+  }
+  if (followUpReply) {
+    contextLines.push(`User reply to that follow-up: ${reply}`);
+  }
+
+  const retrievalQuestion = followUpReply
+    ? `${remembered.lastUserQuestion ? `${remembered.lastUserQuestion}\n` : ""}${remembered.lastAssistantMessage}\nUser reply: ${reply}`
+    : reply;
+
+  return {
+    sessionId,
+    retrievalQuestion,
+    contextText: contextLines.join("\n"),
+    shouldRemember: Boolean(sessionId),
+  };
+}
 
 async function getAyah(surah, ayah) {
   const cacheKey = `${surah}:${ayah}`;
@@ -42,13 +92,25 @@ function stripMarkdownFormatting(text) {
 
 router.post("/", async (req, res) => {
   try {
-    const { question } = req.body;
+    const { question, responsePreferences, conversationContext } = req.body;
     if (!question) {
       return res.status(400).json({ error: "question is required" });
     }
 
+    const { sessionId, retrievalQuestion, contextText, shouldRemember } =
+      buildConversationContext(question, conversationContext);
+
+    const preferenceText = normalizeText(responsePreferences);
+    const embeddingQuestion = [
+      contextText,
+      `Current user message: ${retrievalQuestion}`,
+      preferenceText ? `Response preferences: ${preferenceText}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n\n");
+
     // 1. Embed the question
-    const embedding = await getEmbedding(question);
+    const embedding = await getEmbedding(embeddingQuestion);
 
     // 2. Query Pinecone for top relevant chunks
     const pc = await initPinecone();
@@ -160,19 +222,19 @@ router.post("/", async (req, res) => {
               "You are a Quran-only assistant. You MUST answer solely from the Quran verses supplied in the user message. " +
               "Do NOT use any knowledge from your training, the internet, or any external source. " +
               "Always cite [Surah X, Ayah Y] for every verse you reference. " +
-              "Always include the Arabic text (fetched from the Quran API using the surah and ayah numbers) of each verse you cite, followed by its translation." +
+              "Always include the Arabic text (fetched from the Quran API using the surah and ayah numbers) of each verse you cite, followed by its translation. DO NOT explicitly mention Arabic: Let it flow naturally." +
               "Write in plain text only. Do not use markdown formatting, bold, italics, bullets, or asterisks. " +
               "If the provided verses do not contain enough information to answer the question, respond with exactly: " +
-              "I could not find an answer to this question in the provided Quran verses."+
-              "Tonality: follow a natural tone, aim is to help the user underestand Islam. Do not repeat that you're only using the provided verses, just answer the question as best as you can. " +
+              "I could not find an answer to this question in the provided Quran verses." +
+              "Do not instill any fearful or negative emotions in the user. Make your answers sound welcoming and soft, while ensuring 100% factual accuracy." +
+              "Tonality: follow a natural tone, aim is to help the user understand Islam. Do not repeat that you're only using the provided verses, just answer the question as best as you can. " +
               "If there is an obvious inference that can be made from the provided verses, you may make it, but do not add any information that is not supported by the provided verses. " +
-              "Add \"and Allah knows best\" after every answer." +
-              "Prompt the user if they want to know about a [related topic] after answering the question. " +
+              'Add "And Allah knows best" after every answer if applicable.' +
               "Never deviate from this rule under any circumstances.",
           },
           {
             role: "user",
-            content: `Quran verses:\n${context}\n\nQuestion: ${question}`,
+            content: `Quran verses:\n${context}\n\nQuestion: ${embeddingQuestion || retrievalQuestion}`,
           },
         ],
       },
@@ -182,6 +244,13 @@ router.post("/", async (req, res) => {
     const answer = stripMarkdownFormatting(
       groqResponse.data.choices[0].message.content,
     );
+
+    if (shouldRemember) {
+      conversationMemory.set(sessionId, {
+        lastUserQuestion: normalizeText(question),
+        lastAssistantMessage: answer,
+      });
+    }
 
     res.json({
       answer,
