@@ -229,7 +229,7 @@ router.post("/", async (req, res) => {
               "Do not instill any fearful or negative emotions in the user. Make your answers sound welcoming and soft, while ensuring 100% factual accuracy." +
               "Tonality: follow a natural tone, aim is to help the user understand Islam. Do not repeat that you're only using the provided verses, just answer the question as best as you can. " +
               "If there is an obvious inference that can be made from the provided verses, you may make it, but do not add any information that is not supported by the provided verses. " +
-              'Add "And Allah knows best" after every answer if applicable.' +
+              'Add "And Allah knows best" after every answer ONLY if applicable.' +
               "Never deviate from this rule under any circumstances.",
           },
           {
