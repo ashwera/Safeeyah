@@ -1,7 +1,14 @@
 import express from "express";
 import axios from "axios";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 import { initPinecone } from "../utils/pinecone.js";
 import { getEmbedding } from "../utils/embeddings.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const SYSTEM_PROMPT_PATH = path.resolve(__dirname, "../prompt.txt");
+const SYSTEM_PROMPT = fs.readFileSync(SYSTEM_PROMPT_PATH, "utf8").trim();
 
 const router = express.Router();
 const SIMILARITY_THRESHOLD = 0.4;
@@ -218,19 +225,7 @@ router.post("/", async (req, res) => {
         messages: [
           {
             role: "system",
-            content:
-              "You are a Quran-only assistant. You MUST answer solely from the Quran verses supplied in the user message. " +
-              "Do NOT use any knowledge from your training, the internet, or any external source. " +
-              "Always cite [Surah X, Ayah Y] for every verse you reference. " +
-              "Always include the Arabic text (fetched from the Quran API using the surah and ayah numbers) of each verse you cite, followed by its translation. DO NOT explicitly mention Arabic: Let it flow naturally." +
-              "Write in plain text only. Do not use markdown formatting, bold, italics, bullets, or asterisks. " +
-              "If the provided verses do not contain enough information to answer the question, respond with exactly: " +
-              "I could not find an answer to this question in the provided Quran verses." +
-              "Do not instill any fearful or negative emotions in the user. Make your answers sound welcoming and soft, while ensuring 100% factual accuracy." +
-              "Tonality: follow a natural tone, aim is to help the user understand Islam. Do not repeat that you're only using the provided verses, just answer the question as best as you can. " +
-              "If there is an obvious inference that can be made from the provided verses, you may make it, but do not add any information that is not supported by the provided verses. " +
-              'Add "And Allah knows best" after every answer ONLY if applicable.' +
-              "Never deviate from this rule under any circumstances.",
+            content: SYSTEM_PROMPT,
           },
           {
             role: "user",
