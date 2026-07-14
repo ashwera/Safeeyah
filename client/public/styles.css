@@ -97,15 +97,6 @@ button {
   overflow: hidden;
 }
 
-.landing-nav,
-.app-header {
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid var(--line);
-}
-
 .brand {
   display: inline-flex;
   gap: 12px;
@@ -182,6 +173,10 @@ button {
 .hero-copy {
   padding: 70px 0;
   animation: rise-in 520ms ease-out both;
+}
+
+.hero-brand {
+  margin-bottom: 18px;
 }
 
 .eyebrow {
@@ -508,23 +503,6 @@ h1 em {
   backdrop-filter: blur(14px);
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 23px;
-}
-
-.icon-button {
-  width: 40px;
-  height: 40px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--line);
-  border-radius: 50%;
-  background: transparent;
-  cursor: pointer;
-}
-
 .icon-button svg {
   width: 19px;
   fill: none;
@@ -535,37 +513,6 @@ h1 em {
 .chat-shell {
   width: min(850px, calc(100% - 36px));
   min-height: 0;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-}
-
-.conversation {
-  flex: 1 1 auto;
-  min-height: 0;
-  padding: 58px 18px 30px;
-  overflow: auto;
-  overscroll-behavior-y: contain;
-  -webkit-overflow-scrolling: touch;
-}
-
-.welcome-message {
-  max-width: 650px;
-  margin: 4vh auto 0;
-  text-align: center;
-  animation: rise-in 500ms ease-out both;
-}
-
-.welcome-ornament,
-.modal-ornament {
-  width: 47px;
-  height: 47px;
-  margin: 0 auto 30px;
-  display: grid;
-  place-items: center;
-  border: 1px solid var(--sand);
-  border-radius: 50%;
-  color: var(--brown);
 }
 
 .welcome-message h2 {
@@ -997,23 +944,9 @@ h1 em {
     overflow: visible;
   }
 
-  .landing-nav {
-    min-height: 76px;
-    height: auto;
-    padding: 10px 0;
-    flex-wrap: wrap;
-    gap: 12px;
-  }
-
   .hero {
     grid-template-columns: 1fr;
     gap: 28px;
-  }
-
-  .nav-actions {
-    gap: 12px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
   }
 
   .hero-copy {
@@ -1044,24 +977,11 @@ h1 em {
   .landing-footer span:last-child {
     display: none;
   }
-
-  .chat-app {
-    overflow: hidden;
-  }
-
-  .chat-shell {
-    width: min(100%, calc(100% - 28px));
-    flex: 1 1 auto;
-  }
 }
 
 @media (max-width: 520px) {
   .landing {
     padding: 0 14px;
-  }
-
-  .landing-nav {
-    gap: 12px;
   }
 
   .brand {
@@ -1105,29 +1025,6 @@ h1 em {
   .art-caption {
     right: 2px;
     bottom: 14%;
-  }
-
-  .app-header {
-    min-height: 72px;
-    height: auto;
-    padding: 10px 14px;
-    gap: 12px;
-    align-items: flex-start;
-  }
-
-  .header-actions {
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-  }
-
-  .header-link {
-    display: none;
-  }
-
-  .nav-actions .nav-link {
-    width: auto;
-    justify-content: flex-start;
   }
 
   .conversation {
