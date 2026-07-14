@@ -81,7 +81,9 @@ settingsButtons.forEach((button) => {
   button.addEventListener("click", openSettingsDialog);
 });
 
-document.querySelector("#settingsButton").addEventListener("click", openSettingsDialog);
+document
+  .querySelector("#settingsButton")
+  .addEventListener("click", openSettingsDialog);
 
 settingsForm.addEventListener("submit", (event) => {
   event.preventDefault();
