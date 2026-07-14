@@ -2,6 +2,7 @@ const landing = document.querySelector("#landing");
 const chatApp = document.querySelector("#chatApp");
 const settingsDialog = document.querySelector("#settingsDialog");
 const settingsForm = document.querySelector("#settingsForm");
+const settingsButtons = document.querySelectorAll("[data-open-settings]");
 const questionForm = document.querySelector("#questionForm");
 const questionInput = document.querySelector("#questionInput");
 const sendButton = document.querySelector("#sendButton");
@@ -64,14 +65,23 @@ document.querySelector("[data-open-roadmap]").addEventListener("click", () => {
   roadmapDialog.showModal();
 });
 
+function openSettingsDialog() {
+  settingsForm.responseStyle.value = preferences.responseStyle;
+  settingsForm.language.value = preferences.language;
+  settingsForm.arabicTerms.checked = preferences.arabicTerms;
+  themeToggle.checked = preferences.darkMode;
+  settingsDialog.showModal();
+}
+
 document.querySelectorAll("[data-close-modal]").forEach((button) => {
   button.addEventListener("click", () => button.closest("dialog").close());
 });
 
-document.querySelector("#settingsButton").addEventListener("click", () => {
-  themeToggle.checked = preferences.darkMode;
-  settingsDialog.showModal();
+settingsButtons.forEach((button) => {
+  button.addEventListener("click", openSettingsDialog);
 });
+
+document.querySelector("#settingsButton").addEventListener("click", openSettingsDialog);
 
 settingsForm.addEventListener("submit", (event) => {
   event.preventDefault();

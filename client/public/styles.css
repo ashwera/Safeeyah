@@ -53,6 +53,7 @@ body {
   margin: 0;
   min-height: 100vh;
   min-height: 100dvh;
+  overflow-x: hidden;
   color: var(--ink);
   background:
     radial-gradient(circle at 12% 14%, var(--body-glow), transparent 30%),
@@ -89,7 +90,6 @@ button {
 }
 
 .landing {
-  min-height: 100vh;
   min-height: 100dvh;
   display: grid;
   grid-template-rows: auto 1fr auto;
@@ -281,7 +281,7 @@ h1 em {
   position: absolute;
   top: 9%;
   right: 4%;
-  width: 145px;
+  gap: 18px;
   aspect-ratio: 1;
   border-radius: 50%;
   background: rgba(211, 176, 140, 0.34);
@@ -488,6 +488,9 @@ h1 em {
 .chat-app {
   min-height: 100vh;
   min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   background:
     linear-gradient(var(--chat-overlay-start), var(--chat-overlay-end)),
     repeating-linear-gradient(
@@ -531,14 +534,15 @@ h1 em {
 
 .chat-shell {
   width: min(850px, calc(100% - 36px));
-  min-height: calc(100vh - 84px);
-  min-height: calc(100dvh - 84px);
+  min-height: 0;
   margin: auto;
-  display: grid;
-  grid-template-rows: 1fr auto;
+  display: flex;
+  flex-direction: column;
 }
 
 .conversation {
+  flex: 1 1 auto;
+  min-height: 0;
   padding: 58px 18px 30px;
   overflow: auto;
   overscroll-behavior-y: contain;
@@ -658,8 +662,7 @@ h1 em {
 }
 
 .composer {
-  position: sticky;
-  bottom: env(safe-area-inset-bottom, 0px);
+  position: relative;
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 10px;
@@ -998,11 +1001,19 @@ h1 em {
     min-height: 76px;
     height: auto;
     padding: 10px 0;
+    flex-wrap: wrap;
+    gap: 12px;
   }
 
   .hero {
     grid-template-columns: 1fr;
     gap: 28px;
+  }
+
+  .nav-actions {
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .hero-copy {
@@ -1014,6 +1025,7 @@ h1 em {
     height: clamp(320px, 68vw, 430px);
     min-height: 0;
     margin: 0 auto;
+    overflow: hidden;
   }
 
   .primary-button,
@@ -1032,11 +1044,24 @@ h1 em {
   .landing-footer span:last-child {
     display: none;
   }
+
+  .chat-app {
+    overflow: hidden;
+  }
+
+  .chat-shell {
+    width: min(100%, calc(100% - 28px));
+    flex: 1 1 auto;
+  }
 }
 
 @media (max-width: 520px) {
   .landing {
     padding: 0 14px;
+  }
+
+  .landing-nav {
+    gap: 12px;
   }
 
   .brand {
@@ -1065,6 +1090,7 @@ h1 em {
   .hero-art {
     width: 100%;
     height: clamp(280px, 96vw, 360px);
+    overflow: hidden;
   }
 
   .arch-front {
@@ -1073,16 +1099,35 @@ h1 em {
 
   .arch-back {
     width: 74%;
+    transform: translate(16px, -24px);
+  }
+
+  .art-caption {
+    right: 2px;
+    bottom: 14%;
   }
 
   .app-header {
     min-height: 72px;
     height: auto;
     padding: 10px 14px;
+    gap: 12px;
+    align-items: flex-start;
   }
 
   .header-actions {
-    gap: 14px;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .header-link {
+    display: none;
+  }
+
+  .nav-actions .nav-link {
+    width: auto;
+    justify-content: flex-start;
   }
 
   .conversation {
@@ -1158,6 +1203,9 @@ h1 em {
     text-align: left;
     font-size: 0.72rem;
     line-height: 1.4;
+  }
+  .modal h2 {
+    font-size: 2rem;
   }
 }
 
