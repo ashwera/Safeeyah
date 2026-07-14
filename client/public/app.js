@@ -51,6 +51,7 @@ const preferences = {
 };
 
 applyTheme(preferences.darkMode);
+themeToggle.checked = preferences.darkMode;
 
 journeyButton.addEventListener("click", () => {
   landing.classList.add("is-hidden");
