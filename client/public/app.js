@@ -14,6 +14,7 @@ const reducedMotionQuery = window.matchMedia(
 );
 const conversationStateKey = "safeeyah-conversation-state";
 const conversationSessionKey = "safeeyah-conversation-session";
+const preferencesStorageKey = "safeeyah-preferences";
 
 function getConversationSessionId() {
   const existingSessionId = sessionStorage.getItem(conversationSessionKey);
@@ -38,27 +39,34 @@ function saveConversationState(state) {
   localStorage.setItem(conversationStateKey, JSON.stringify(state));
 }
 
+function loadPreferences() {
+  try {
+    return JSON.parse(localStorage.getItem(preferencesStorageKey)) ?? {};
+  } catch {
+    return {};
+  }
+}
+
 const conversationState = {
   sessionId: getConversationSessionId(),
   ...loadConversationState(),
 };
 
+const savedPreferences = loadPreferences();
 const preferences = {
   responseStyle: "balanced",
   language: "English",
   arabicTerms: true,
   darkMode: localStorage.getItem("safeeyah-theme") === "dark",
+  ...savedPreferences,
 };
 
 applyTheme(preferences.darkMode);
-themeToggle.checked = preferences.darkMode;
+syncPreferencesForm();
 
 journeyButton.addEventListener("click", () => {
   landing.classList.add("is-hidden");
   chatApp.classList.remove("is-hidden");
-  requestAnimationFrame(() => {
-    questionInput.focus();
-  });
 });
 
 document.querySelector("[data-open-roadmap]").addEventListener("click", () => {
@@ -77,8 +85,11 @@ settingsForm.addEventListener("submit", (event) => {
   preferences.arabicTerms = data.get("arabicTerms") === "on";
   preferences.darkMode = data.get("darkMode") === "on";
   applyTheme(preferences.darkMode);
+  localStorage.setItem(preferencesStorageKey, JSON.stringify(preferences));
   settingsDialog.close();
 });
+
+settingsDialog.addEventListener("close", syncPreferencesForm);
 
 themeToggle.addEventListener("change", () => {
   preferences.darkMode = themeToggle.checked;
@@ -88,6 +99,13 @@ themeToggle.addEventListener("change", () => {
 function applyTheme(isDark) {
   document.documentElement.dataset.theme = isDark ? "dark" : "light";
   localStorage.setItem("safeeyah-theme", isDark ? "dark" : "light");
+}
+
+function syncPreferencesForm() {
+  settingsForm.elements.responseStyle.value = preferences.responseStyle;
+  settingsForm.elements.language.value = preferences.language;
+  settingsForm.elements.arabicTerms.checked = preferences.arabicTerms;
+  themeToggle.checked = preferences.darkMode;
 }
 
 function initialWelcomeMarkup() {
@@ -109,6 +127,7 @@ function bindSuggestionButtons() {
   document.querySelectorAll(".suggestions button").forEach((button) => {
     button.addEventListener("click", () => {
       questionInput.value = button.textContent;
+      questionInput.dispatchEvent(new Event("input"));
       questionInput.focus();
     });
   });
@@ -161,6 +180,7 @@ questionForm.addEventListener("submit", async (event) => {
   questionInput.value = "";
   questionInput.style.height = "auto";
   sendButton.disabled = true;
+  questionInput.disabled = true;
   const typing = addTypingIndicator();
 
   const preferenceContext =
@@ -203,6 +223,7 @@ questionForm.addEventListener("submit", async (event) => {
     console.error(error);
   } finally {
     sendButton.disabled = false;
+    questionInput.disabled = false;
     questionInput.focus();
   }
 });

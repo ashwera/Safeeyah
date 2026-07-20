@@ -461,6 +461,11 @@ h1 em {
   scrollbar-color: color-mix(in srgb, var(--teal) 52%, transparent) transparent;
 }
 
+.conversation:has(.welcome-message) {
+  overflow: hidden;
+  padding: 0;
+}
+
 .welcome-message {
   min-height: 100%;
   display: flex;
@@ -827,7 +832,8 @@ h1 em {
 .theme-switch input:focus-visible + .theme-switch-track,
 button:focus-visible,
 textarea:focus-visible,
-select:focus-visible {
+select:focus-visible,
+.modal input:focus-visible {
   outline: 2px solid var(--teal-deep);
   outline-offset: 3px;
 }
