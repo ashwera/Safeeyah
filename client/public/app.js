@@ -73,6 +73,11 @@ document.querySelector("[data-open-roadmap]").addEventListener("click", () => {
   roadmapDialog.showModal();
 });
 
+document.querySelector("#settingsButton").addEventListener("click", () => {
+  syncPreferencesForm();
+  settingsDialog.showModal();
+});
+
 document.querySelectorAll("[data-close-modal]").forEach((button) => {
   button.addEventListener("click", () => button.closest("dialog").close());
 });

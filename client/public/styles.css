@@ -682,6 +682,48 @@ h1 em {
   backdrop-filter: blur(6px);
 }
 
+.settings-button {
+  position: fixed;
+  top: calc(16px + env(safe-area-inset-top, 0px));
+  right: 16px;
+  z-index: 5;
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--ink-soft);
+  background: var(--paper-soft);
+  box-shadow: var(--shadow-soft);
+  backdrop-filter: blur(8px);
+  cursor: pointer;
+  transition:
+    color 180ms ease,
+    transform 180ms ease;
+}
+
+.settings-button:hover {
+  color: var(--teal-deep);
+  transform: rotate(30deg);
+}
+
+.settings-button svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .settings-button:hover {
+    transform: none;
+  }
+}
+
 .modal-close {
   position: absolute;
   top: 14px;
