@@ -8,7 +8,7 @@ import { PDFParse } from "pdf-parse";
 const router = express.Router(); //handle incoming requests to /upload endpoint
 const upload = multer({ storage: multer.memoryStorage() }); //store 
 
-router.post("/upload", upload.single("pdf"), async (req, res) => {
+router.post("/", upload.single("pdf"), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: "No PDF file uploaded" });

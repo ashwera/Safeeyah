@@ -19,6 +19,8 @@ A Quran-grounded question-and-answer app. The Express server serves the web UI a
    PINECONE_INDEX_NAME=your_1536_dimension_index
    GEMINI_API_KEY=your_gemini_key
    GROQ_API_KEY=your_groq_key
+   # Optional, defaults to openai/gpt-oss-120b
+   GROQ_MODEL=openai/gpt-oss-120b
    ```
 
    The Pinecone index must use 1,536 dimensions to match `gemini-embedding-001`.

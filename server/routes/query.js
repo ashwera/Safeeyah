@@ -11,6 +11,8 @@ const SYSTEM_PROMPT_PATH = path.resolve(__dirname, "../prompt.txt");
 const SYSTEM_PROMPT = fs.readFileSync(SYSTEM_PROMPT_PATH, "utf8").trim();
 
 const router = express.Router();
+// llama-3.3-70b-versatile was shut down on Groq's free/dev tiers on 2026-08-16.
+const GROQ_MODEL = process.env.GROQ_MODEL || "openai/gpt-oss-120b";
 const SIMILARITY_THRESHOLD = 0.4;
 const CONTEXT_WINDOW = 2; // ayahs to fetch before and after each match
 const ayahCache = new Map();
@@ -221,7 +223,7 @@ router.post("/", async (req, res) => {
     const groqResponse = await axios.post(
       "https://api.groq.com/openai/v1/chat/completions",
       {
-        model: "llama-3.3-70b-versatile",
+        model: GROQ_MODEL,
         messages: [
           {
             role: "system",
@@ -256,8 +258,11 @@ router.post("/", async (req, res) => {
       })),
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message });
+    // Surface the upstream API's own error body (e.g. Groq "model not found")
+    const upstream = error.response?.data?.error;
+    const detail = upstream?.message ?? upstream ?? error.message;
+    console.error(error.config?.url ?? "", detail, error.stack);
+    res.status(500).json({ error: typeof detail === "string" ? detail : JSON.stringify(detail) });
   }
 });
 
